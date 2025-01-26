@@ -1,0 +1,52 @@
+.ant-layout-header {
+    height: 64px;
+    padding: 0 21px;
+    color: rgba(0, 0, 0, 0.85);
+    line-height: 64px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    position: fixed;
+    z-index: 100;
+    width: 100%
+}
+
+.ant-drawer-header {
+    height: 64px;
+    position: relative;
+    padding: 16px 24px;
+    color: rgba(0, 0, 0, 0.85);
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.ant-drawer-title {
+    line-height: 31px;
+}
+
+.ant-layout-footer {
+    padding: 14px 14px;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 14px;
+    background: #f0f2f5;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.ant-layout-content {
+    -moz-box-flex: 1;
+    flex: auto;
+    min-height: 0;
+    background: #fff;
+    padding: 64px 14px 78px 14px;
+    height: 100vh;
+}
+
+.ant-input-prefix {
+    margin-right: 12px;
+}
+
+.avatar-uploader > .ant-upload {
+    width: 128px;
+    height: 128px;
+}

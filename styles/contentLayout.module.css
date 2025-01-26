@@ -1,0 +1,9 @@
+
+.layoutHome :global .ant-layout-content {
+    -moz-box-flex: 1;
+    flex: auto;
+    min-height: 0;
+    background: #fff;
+    padding: 64px 0px 78px 0px!important;
+    height: 100vh;
+}
