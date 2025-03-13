@@ -1,4 +1,3 @@
-/*
 const API_BASE_URL = process.env.NODE_ENV === "production"
     ? "https://api.hongkang.name"
     : "";
@@ -13,8 +12,8 @@ export const Urls = {
     getMetaMaskNonce: (address: string | null): string => `${API_BASE_URL}/api/metamask/${address}/nonce`,
   },
 };
- */
 
+/*
 export const Urls = {
     auth: {
         getName: (id:number) => `/api/users/${id}`,
@@ -25,6 +24,7 @@ export const Urls = {
         getMetaMaskNonce: (address:string|null) => `/api/metamask/${address}/nonce`
     }
 }
+ */
 
 export function GetSuffix(filename: string) {
     const pos = filename.lastIndexOf('.')
