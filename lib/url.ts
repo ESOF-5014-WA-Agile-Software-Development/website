@@ -1,3 +1,19 @@
+/*
+const API_BASE_URL = process.env.NODE_ENV === "production"
+    ? "https://api.hongkang.name"
+    : "";
+
+export const Urls = {
+  auth: {
+    getName: (id: number): string => `${API_BASE_URL}/api/users/${id}`,
+    checkUserExists: (name: string): string => `${API_BASE_URL}/api/exists/users/${name}`,
+    sendEmailCaptcha: (): string => `${API_BASE_URL}/api/verify/email`,
+    signInMetaMask: (): string => `${API_BASE_URL}/api/sign-in/metamask`,
+    signUpMetaMask: (): string => `${API_BASE_URL}/api/sign-up/metamask`,
+    getMetaMaskNonce: (address: string | null): string => `${API_BASE_URL}/api/metamask/${address}/nonce`,
+  },
+};
+ */
 
 export const Urls = {
     auth: {
@@ -7,18 +23,6 @@ export const Urls = {
         signInMetaMask: () => `/api/sign-in/metamask`,
         signUpMetaMask: () => `/api/sign-up/metamask`,
         getMetaMaskNonce: (address:string|null) => `/api/metamask/${address}/nonce`
-    },
-    bs: {
-        getOssToken: () => `/api/bs/v1/oss/token`,
-        createNFT: () => `/api/bs/v1/nfts`,
-        getNFTS: () => `/api/bs/v1/nfts`,
-        getConsoleNFTS: () => `/api/bs/v1/console/nfts`,
-        updateConsoleNFTS: (nft:number) => `/api/bs/v1/console/nfts/${nft}`,
-        retryNFTSPreProcess: (nft:number) => `/api/bs/v1/nfts/${nft}/action`,
-        mintNFT: (nft:number) => `/api/bs/v1/nfts/${nft}/mint`,
-        getEditions: (nft:number) => `/api/bs/v1/nfts/${nft}/editions`,
-        getMarketArts: (current:number, page_size:number) => `/api/bs/v1/market/arts?current=${current}&page_size=${page_size}`,
-        GetEditionByToken: (token:string) => `/api/bs/v1/tokens/${token}`
     }
 }
 
