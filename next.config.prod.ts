@@ -19,14 +19,6 @@ const nextConfig: NextConfig = {
         holesky: "0xd55136490488E594ed579E962A8FD76fC9AFEEe4",
         sepolia: "0x433Ae9e83B576E629C3686E44636d2F153A7A9Cb",
         network: "holesky.etherscan.io",
-    },
-    async rewrites() {
-        return [
-            {
-                source: "/api/:path*",
-                destination: "https://api.hongkang.name/api/:path*"
-            },
-        ];
     }
 };
 
