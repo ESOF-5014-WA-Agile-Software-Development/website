@@ -1,0 +1,14 @@
+.news :global  {
+    padding: 0 20px;
+}
+.news :global .ant-image {
+    width: 100%;
+}
+.news :global .ant-card-body{
+    padding: 0;
+}
+
+.sign-up :global .ant-statistic-content {
+    font-size: 16px;
+    color: #fff;
+}

@@ -1,0 +1,148 @@
+.market :global .ant-card-body {
+    padding: 0 24px;
+    background-color: #FAFBFC;
+}
+.market :global {
+    font-weight: normal;
+}
+.market :global .price{
+    margin: 6px 0;
+}
+
+.market :global .price .pri{
+    margin: 2px 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-weight: 590;
+    font-size: 14px;
+}
+
+.market :global .ant-card-body{
+    padding: 20px;
+}
+
+.PriceLine :global .ant-divider-horizontal{
+    margin: 10px 0;
+    border-top: solid 2px #ccc;
+}
+
+.PriceLine :global .ant-card-body{
+    padding: 10px 0;
+}
+
+.PriceLine :global .ant-card-body h5{
+    padding-left: 18px;
+}
+
+.desc :global .ant-card-body{
+    padding: 10px 0;
+}
+.desc :global .ant-card-body h3{
+    padding-left: 18px;
+}
+.bidding :global {
+    width: 100%;
+    margin-top: 60px;
+}
+.bidding :global .ant-card{
+
+}
+.bidding :global .ant-card-body{
+    padding: 0;
+}
+.bidding :global .ant-card-head{
+    border-bottom: solid #ccc 2px;
+    font-size: 20px;
+}
+.bidding :global .ant-table-ping-right:not(.ant-table-has-fix-right) .ant-table-container::after {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.bidding :global .ant-table-ping-left:not(.ant-table-has-fix-left) .ant-table-container::before {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+@media (max-width:640px) {
+    .marketBox :global .ant-card-body {
+        padding: 0 8px;
+    }
+    .bidding :global {
+        margin-top: 40px;
+    }
+}
+
+.bidding :global .ant-table-wrapper{
+    font-family: Montserrat;
+}
+.bidding :global .ant-table tr td{
+    min-width: 150px;
+    padding: 14px 0;
+}
+.bidding :global .ant-table td{
+    align-items: center;
+}
+.bidding :global .ant-table th{
+    min-width: 100px;
+}
+.bidding :global .ant-table-thead > tr > th{
+    font-weight: bold;
+    border:none;
+    font-size: 16px;
+    width: 34%;
+    text-align: center;
+}
+
+.bidding :global .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before{
+    position: unset;
+}
+.bidding :global .ant-table-thead{
+    background-color: #FAFAFA;
+    width: 100%;
+}
+.bidding :global .ant-table-thead tr{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.bidding :global .ant-table-tbody:first-child{
+    display: none;
+}
+.bidding :global .ant-table-tbody > tr > td{
+    border:none;
+    text-align: center;
+    width: 30%;
+}
+.bidding :global .ant-table-tbody > tr > td p{
+    margin: 0;
+}
+.bidding :global .ant-table-tbody > tr{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #FAFBFC;
+    text-align: center;
+    margin: 1.5rem 0;
+    font-size: 16px;
+}
+@media (max-width:640px) {
+    .bidding :global .ant-table-thead > tr{
+        width: 100%;
+        padding: 0;
+    }
+    .bidding :global .ant-table-tbody > tr{
+        width: 100%;
+        padding: 0.5rem 0;
+        margin: 2rem 0;
+    }
+    .bidding :global .ant-table-tbody > tr > td{
+        padding: 0 3px;
+    }
+}
+.bidding :global .ant-table-cell{
+    margin:0
+}
+.bidding :global .ant-table .ant-table-measure-row{
+    display: none;
+}
