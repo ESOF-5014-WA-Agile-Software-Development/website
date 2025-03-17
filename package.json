@@ -10,7 +10,7 @@
 		"lint": "next lint",
 		"pages:build": "yarn next-on-pages",
 		"preview": "yarn pages:build && wrangler pages dev",
-		"deploy": "NEXT_CONFIG_FILE=next.config.prod.js yarn pages:build && wrangler pages deploy",
+		"deploy": "NEXT_CONFIG_FILE=next.config.prod.js yarn pages:build && wrangler pages deploy --branch=main",
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
 	},
 	"dependencies": {
