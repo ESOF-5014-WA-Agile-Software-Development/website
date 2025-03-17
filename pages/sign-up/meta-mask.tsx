@@ -16,7 +16,7 @@ import { useAppSelector } from "@/store/hooks";
 import { ConnectSite, Sign } from "@/lib/mm";
 import { IsUserLogin } from "@/lib/user";
 
-import styles from '@/styles/news.module.css'
+import styles from '@/styles/signup.module.css';
 
 
 function SignUpMetaMask(props: any) {

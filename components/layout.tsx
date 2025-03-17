@@ -1,21 +1,21 @@
 import axios from "axios";
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 
-import { Layout, Row, Col, Drawer, Avatar, Dropdown, Menu, Spin, notification, Image } from "antd";
-import { MenuOutlined, DownCircleOutlined, LoadingOutlined } from "@ant-design/icons";
+import {Layout, Avatar, Dropdown, notification, Image, MenuProps} from "antd";
 
-import { useAppDispatch } from "@/store/hooks";
-import { WalletType, selectWallet, setSelectedWalletExists, setProviderReady,
-    setChainID, setChainName, setAccount } from "@/store/ether";
-import { IsMetaMaskExists, MetaMaskProvider, IsMetaMaskReady, OnMetaMaskEvents } from "@/lib/mm";
-import { User, EmptyUserState, GetUser, IsUserLogin, Logout } from "@/lib/user";
+import {useAppDispatch} from "@/store/hooks";
+import {
+    WalletType, selectWallet, setSelectedWalletExists, setProviderReady, setChainID, setChainName, setAccount
+} from "@/store/ether";
+import {IsMetaMaskExists, MetaMaskProvider, IsMetaMaskReady, OnMetaMaskEvents} from "@/lib/mm";
+import {User, EmptyUserState, GetUser, IsUserLogin, Logout} from "@/lib/user";
 
 import styles from "@/styles/contentLayout.module.css";
 
-const { Header, Content } = Layout;
 
+const {Header, Content} = Layout;
 
 notification.config({
     placement: "topRight",
@@ -24,227 +24,84 @@ notification.config({
     top: 76,
 });
 
-const UserSideMenu = (props: any) => {
-    const {user, setUser, userLoading} = props;
-    const router = useRouter();
-
-    const onLogout = async () => {
-        Logout();
-        setUser(EmptyUserState);
-        await router.push("/");
-    };
-
-    const ConsoleEnabled = () => {
-        if (
-            user &&
-            user.info &&
-            user.info.email &&
-            (user.info.email === "hongkang@hongkang.name")
-        ) {
-            return (
-                <Link href="/console" passHref>
-                    <p>Console</p>
-                </Link>
-            );
-        } else {
-            return <></>;
-        }
-    };
-
-    if (userLoading) {
-        return (
-            <Spin indicator={<LoadingOutlined style={{fontSize: 24}} spin/>}/>
-        );
-    } else if (!IsUserLogin(user)) {
-        return (
-            <>
-                <Link href="/sign-up/meta-mask" passHref>
-                    <p>Sign Up</p>
-                </Link>
-                <Link href="/sign-in" passHref>
-                    <p>Sign In</p>
-                </Link>
-            </>
-        );
-    } else {
-        return (
-            <>
-                <ConsoleEnabled/>
-                <Link href="/studio" passHref>
-                    <p>Studio</p>
-                </Link>
-                <a onClick={onLogout}>Logout</a>
-            </>
-        );
-    }
-};
-
-const UserMenu = (props: any) => {
-    const {user, setUser, userLoading} = props;
-    const router = useRouter();
-
-    const onLogout = async () => {
-        Logout();
-        setUser(EmptyUserState);
-        await router.push("/");
-    };
-
-    const ConsoleEnabled = () => {
-        if (
-            user &&
-            user.info &&
-            user.info.email &&
-            (user.info.email === "hongkang@hongkang.name")
-        ) {
-            return (
-                <>
-                    <Menu.Item key="console">
-                        <Link href="/console">Console</Link>
-                    </Menu.Item>
-                    <Menu.Divider/>
-                </>
-            );
-        } else {
-            return <></>;
-        }
-    };
-
-    const userMenu = (
-        <Menu>
-            <ConsoleEnabled/>
-            <Menu.Item key="studio">
-                <Link href="/studio">Studio</Link>
-            </Menu.Item>
-            <Menu.Divider/>
-            <Menu.Item key="logout" onClick={onLogout}>
-                Logout
-            </Menu.Item>
-        </Menu>
-    );
-
-    if (userLoading) {
-        return (
-            <Spin indicator={<LoadingOutlined style={{fontSize: 24}} spin/>}/>
-        );
-    } else if (!IsUserLogin(user)) {
-        return (
-            <>
-                <Link className="header-nav" href="/sign-up/meta-mask">
-                    Sign Up
-                </Link>
-                <Link className="header-nav" href="/sign-in">
-                    Sign In
-                </Link>
-            </>
-        );
-    } else {
-        return (
-            <Row justify="space-around" align="middle">
-                <Col span={8}>
-                    <Avatar
-                        size={35}
-                        gap={3}
-                        style={{
-                            backgroundColor: "#87d068",
-                            verticalAlign: "middle",
-                            cursor: "pointer",
-                        }}
-                    >
-                        {user.info ? user.info.name[0] : ""}
-                    </Avatar>
-                </Col>
-                <Col span={4}/>
-                <Col span={8}>
-                    <Dropdown overlay={userMenu} trigger={["click"]}>
-                        <Avatar
-                            size={35}
-                            gap={3}
-                            style={{
-                                backgroundColor: "#e4e6eb",
-                                verticalAlign: "middle",
-                                cursor: "pointer",
-                            }}
-                        >
-                            <DownCircleOutlined style={{color: "#1d1f23"}}/>
-                        </Avatar>
-                    </Dropdown>
-                </Col>
-            </Row>
-        );
-    }
-};
-
 const AgileHeader = (props: any) => {
     const router = useRouter();
-    const [sideMenu, setSideMenu] = useState(false);
     const {user, setUser, userLoading} = props;
 
-    const showSideMenu = () => {
-        setSideMenu(true);
+    const handleLogoClick = useCallback(() => router.push("/"), [router]);
+
+    const onClick: MenuProps['onClick'] = async ({key}) => {
+        if (key === "1") {
+            console.info(`Click on item Profile`);
+        } else if (key === "2") {
+            Logout();
+            setUser(EmptyUserState);
+            await router.push("/");
+        }
     };
 
-    const onSideMenuClose = () => {
-        setSideMenu(false);
-    };
+    const items: MenuProps['items'] = [
+        {
+            key: '1',
+            label: 'Profile'
+        },
+        {
+            type: 'divider',
+        },
+        {
+            key: '2',
+            label: 'Logout'
+        }
+    ];
+
+    const LoadingOrSignIn = () => {
+        return userLoading ?
+            <div style={{display: "flex", justifyContent: "center", width: "40px", marginLeft: "30px"}}>
+            </div>
+            :
+            <div style={{display: "flex", alignItems: "center", gap: "12px", marginLeft: "30px"}}>
+                <Link className="header-nav" href="/sign-up">Sign Up</Link>
+                <Link className="header-nav" href="/sign-in">Sign In</Link>
+            </div>;
+    }
 
     return (
-        <Header>
-            <Row>
-                <Col xs={22} sm={22} md={1} lg={1} xl={1} xxl={1}>
-                    <Image
-                        preview={false}
-                        src="/images/favicon.png"
-                        alt="TODO LOGO"
-                        height={45}
-                        style={{display: "inline-block", cursor: "pointer"}}
-                        onClick={() => router.push("/")}
-                    />
-                </Col>
-                <Col xs={0} sm={0} md={9} lg={10} xl={10} xxl={10} offset={9}>
-                    <div style={{float: "right"}}>
-                        {/* Menu */}
-                        <Link className="header-nav" href="/news">
-                            News
-                        </Link>
-                        <Link className="header-nav" href="/market">
-                            Market
-                        </Link>
-                        <Link className="header-nav" href="/about">
-                            About
-                        </Link>
-                    </div>
-                </Col>
-                <Col xs={0} sm={0} md={5} lg={4} xl={4} xxl={4}>
-                    <div style={{float: "right"}}>
-                        <UserMenu user={user} setUser={setUser} userLoading={userLoading}/>
-                    </div>
-                </Col>
-                <Col xs={1} sm={1} md={0} lg={0} xl={0} xxl={0}/>
-                <Col xs={1} sm={1} md={0} lg={0} xl={0} xxl={0}>
-                    <MenuOutlined onClick={showSideMenu}/>
-                </Col>
-            </Row>
-            <Drawer
-                title="Agile"
-                placement="left"
-                closable={false}
-                onClose={onSideMenuClose}
-                visible={sideMenu}
-                key="left"
-                style={{cursor: "pointer", fontWeight: "bold"}}
-            >
-                {/* Menu */}
-                <Link href="/news" passHref>
-                    <p>News</p>
-                </Link>
-                <Link href="/market" passHref>
-                    <p>Market</p>
-                </Link>
-                <Link href="/about" passHref>
-                    <p>About</p>
-                </Link>
-                <UserSideMenu {...props} />
-            </Drawer>
+        <Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+            <Image
+                preview={false}
+                src="/images/favicon.png"
+                alt="CoHome LOGO"
+                height={45}
+                style={{display: "block", cursor: "pointer"}}
+                onClick={handleLogoClick}
+            />
+
+            <div style={{display: "flex", alignItems: "center"}}>
+                <div style={{display: "flex", gap: "3px"}}>
+                    <Link className="header-nav" href="/market">Market</Link>
+                    <Link className="header-nav" href="/about">About</Link>
+                </div>
+                {
+                    IsUserLogin(user) ?
+                        <div style={{display: "flex", justifyContent: "center", width: "40px", marginLeft: "30px"}}>
+                            <Dropdown menu={{items, onClick}} trigger={["click"]}>
+                                <Avatar
+                                    size={35}
+                                    gap={3}
+                                    style={{
+                                        backgroundColor: "#87d068",
+                                        verticalAlign: "middle",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    {user.info ? user.info.name[0] : ""}
+                                </Avatar>
+                            </Dropdown>
+                        </div>
+                        :
+                        <LoadingOrSignIn/>
+                }
+            </div>
         </Header>
     );
 };
