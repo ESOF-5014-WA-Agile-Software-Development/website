@@ -13,7 +13,9 @@ const nextConfig: NextConfig = {
     /* config options here */
     transpilePackages: [
         "rc-util",
-        "rc-picker"
+        "rc-picker",
+        "rc-tree",
+        "rc-table"
     ],
     publicRuntimeConfig: {
         holesky: "0xd55136490488E594ed579E962A8FD76fC9AFEEe4",
