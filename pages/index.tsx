@@ -1,6 +1,7 @@
 import React from "react"
 
 import Head from "next/head"
+import dynamic from "next/dynamic";
 
 import AgileLayout from "@/components/layout"
 import AgileFooter from "@/components/footer"
@@ -25,7 +26,6 @@ function Home() {
             <Head>
                 <title>Home / Agile</title>
                 <meta name="description" content="Home"/>
-                <link rel="icon" href="/favicon.png"/>
             </Head>
             <div style={{minHeight: '100vh', backgroundColor: '#f0f2f5', padding: '24px'}}>
                 <h1 style={{fontSize: '24px', fontWeight: 'bold', marginBottom: '24px'}}>Smart Home Energy
@@ -68,4 +68,6 @@ function Home() {
     )
 }
 
-export default AgileLayout(Home)
+export default dynamic(() => Promise.resolve(AgileLayout(Home)), {
+    ssr: false,
+});

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, {useState, useEffect, useCallback} from "react";
+import { MouseEvent } from "react";
 import Link from "next/link";
 import {useRouter} from "next/router";
 
@@ -12,7 +13,7 @@ import {
 import {IsMetaMaskExists, MetaMaskProvider, IsMetaMaskReady, OnMetaMaskEvents} from "@/lib/mm";
 import {User, EmptyUserState, GetUser, IsUserLogin, Logout} from "@/lib/user";
 
-import styles from "@/styles/contentLayout.module.css";
+import styles from "@/styles/layout.module.css";
 
 
 const {Header, Content} = Layout;
@@ -65,6 +66,15 @@ const AgileHeader = (props: any) => {
             </div>;
     }
 
+    const handleNavigation = (e: MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        if (!IsUserLogin(user)) {
+            router.push("/sign-in").then();
+        } else {
+            router.push("/market").then();
+        }
+    };
+
     return (
         <Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
             <Image
@@ -78,7 +88,7 @@ const AgileHeader = (props: any) => {
 
             <div style={{display: "flex", alignItems: "center"}}>
                 <div style={{display: "flex", gap: "3px"}}>
-                    <Link className="header-nav" href="/market">Market</Link>
+                    <Link className="header-nav" href="/market" onClick={handleNavigation}>Market</Link>
                     <Link className="header-nav" href="/about">About</Link>
                 </div>
                 {

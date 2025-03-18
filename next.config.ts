@@ -10,6 +10,10 @@ setupDevPlatform().catch(console.error);
 import type {NextConfig} from "next";
 
 const nextConfig: NextConfig = {
+  webpack: (config) => {
+    config.cache = false;
+    return config;
+  },
     /* config options here */
     transpilePackages: [
         "rc-util",

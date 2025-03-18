@@ -1,8 +1,8 @@
 import {ethers} from "ethers";
-
 import React, {useEffect, useState, useCallback} from "react";
 
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import getConfig from "next/config";
 
 import {Row, Col, Card, Button, Form, Input, Space, Drawer, InputNumber, Image, Typography, Table, Spin} from "antd";
@@ -11,14 +11,14 @@ import {PlusOutlined, LoadingOutlined} from "@ant-design/icons";
 
 import AgileLayout from "@/components/layout";
 import AgileFooter from "@/components/footer";
+import {EllipsisMiddle} from "@/components/ellipsis";
 import {useWeb3} from "@/context/Web3Provider";
 import {useAppSelector, useContract} from "@/store/hooks";
-import {EllipsisMiddle} from "@/components/ellipsis";
 import {Offer} from "@/lib/type";
 
 const {publicRuntimeConfig} = getConfig();
 
-const CAD_TO_ETH_API = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=cad";
+const CAD_TO_ETH_API = "/proxy/coingecko";
 
 
 function NewOfferDrawer(props: any) {
@@ -40,7 +40,8 @@ function NewOfferDrawer(props: any) {
                 const data = JSON.parse(await response.text()) as { ethereum: { cad: number } };
                 setRate(data.ethereum.cad);
             } catch (error) {
-                console.error("get CAD/ETH rate failed:", error);
+                setRate(2727.13);
+                console.info("get CAD/ETH rate failed:", error);
             }
         };
 
@@ -154,7 +155,7 @@ function PurchaseDrawer(props: any) {
     const {open, show, notify, refreshAfterPurchase, toPurchaseOffer} = props;
 
     const ether = useAppSelector((state) => state.ether);
-    const { provider } = useWeb3();
+    const {provider} = useWeb3();
     const contract = useContract(provider);
 
     const [form] = Form.useForm();
@@ -169,7 +170,8 @@ function PurchaseDrawer(props: any) {
                 const data = JSON.parse(await response.text()) as { ethereum: { cad: number } };
                 setRate(data.ethereum.cad);
             } catch (error) {
-                console.error("get CAD/ETH rate failed:", error);
+                setRate(2727.13);
+                console.info("get CAD/ETH rate failed:", error);
             }
         };
 
@@ -211,15 +213,17 @@ function PurchaseDrawer(props: any) {
     }, [ether, form, open]);
 
     useEffect(() => {
-        form.setFieldsValue({
-            pricePerUnit: toPurchaseOffer?.pricePerUnit,
-            id: toPurchaseOffer?.id,
-        });
+        if (toPurchaseOffer) {
+            form.setFieldsValue({
+                pricePerUnit: toPurchaseOffer?.pricePerUnit,
+                id: toPurchaseOffer?.id,
+            });
+        }
     }, [toPurchaseOffer, form]);
 
-    if(!toPurchaseOffer) {
+    if (!toPurchaseOffer) {
         return <Drawer title="New Offer" onClose={onClose} open={open} width={350}>
-            <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+            <Spin indicator={<LoadingOutlined style={{fontSize: 24}} spin/>}/>
         </Drawer>;
     }
 
@@ -231,7 +235,7 @@ function PurchaseDrawer(props: any) {
                       id: toPurchaseOffer.id,
                       pricePerUnit: toPurchaseOffer.pricePerUnit,
                       electricity: 0,
-            }}>
+                  }}>
                 <Form.Item name="id" label="id" hidden>
                     <Input disabled/>
                 </Form.Item>
@@ -297,26 +301,26 @@ function Page(props: any) {
     };
 
     const fetchOffers = useCallback(async (c: ethers.Contract) => {
-        try {
-            const offerCounter = await c.offerCounter();
-            const offerList = [];
+            try {
+                const offerCounter = await c.offerCounter();
+                const offerList = [];
 
-            for (let i = 1; i <= offerCounter; i++) {
-                const offer = await c.offers(i);
-                offerList.push({
-                    id: i,
-                    key: i,
-                    seller: offer[0],
-                    amount: ethers.utils.formatUnits(offer[1], 18),
-                    pricePerUnit: ethers.utils.formatUnits(offer[2], 18),
-                    isAvailable: offer[3],
-                });
+                for (let i = 1; i <= offerCounter; i++) {
+                    const offer = await c.offers(i);
+                    offerList.push({
+                        id: i,
+                        key: i,
+                        seller: offer[0],
+                        amount: ethers.utils.formatUnits(offer[1], 18),
+                        pricePerUnit: ethers.utils.formatUnits(offer[2], 18),
+                        isAvailable: offer[3],
+                    });
+                }
+                console.log(offerList);
+                setOffers(offerList);
+            } catch (error) {
+                notify.error("Error fetching offers:", error);
             }
-            console.log(offerList);
-            setOffers(offerList);
-        } catch (error) {
-            notify.error("Error fetching offers:", error);
-        }
         }, [notify]
     );
 
@@ -332,7 +336,7 @@ function Page(props: any) {
             await fetchOffers(contract);
         }
     };
-    const [toPurchaseOffer, setToPurchaseOffer] = useState<Offer|null>(null);
+    const [toPurchaseOffer, setToPurchaseOffer] = useState<Offer | null>(null);
 
     const columns: TableProps<Offer>['columns'] = [
         {
@@ -374,7 +378,6 @@ function Page(props: any) {
             <Head>
                 <title>{title}</title>
                 <meta name="description" content={description}/>
-                <link rel="icon" href="/favicon.png"/>
             </Head>
 
             <Card style={{marginTop: "7px", minHeight: "100%", border: "none"}}>
@@ -412,4 +415,6 @@ function Page(props: any) {
     );
 }
 
-export default AgileLayout(Page);
+export default dynamic(() => Promise.resolve(AgileLayout(Page)), {
+    ssr: false,
+});

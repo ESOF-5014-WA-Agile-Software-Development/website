@@ -1,36 +1,33 @@
 import React from "react";
-import { Provider } from "react-redux";
+import {Provider} from "react-redux";
 
-import type { AppProps } from "next/app";
-// import dynamic from "next/dynamic";
+import Head from "next/head";
+import type {AppProps} from "next/app";
 
 import store from "@/store/store";
-import { Web3Provider } from "@/context/Web3Provider";
+import {Web3Provider} from "@/context/Web3Provider";
+import {EnergyProvider} from "@/lib/data";
 
 import "antd/dist/reset.css";
 import "@/styles/antd.custom.css";
 import "@/styles/app.css";
 import "@/styles/globals.css";
-import {EnergyProvider} from "@/lib/data";
 
 
 // TODO connect MetaMask manually
-function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <Provider store={store}>
-        <Web3Provider>
-            <EnergyProvider>
-                <Component {...pageProps} />
-            </EnergyProvider>
-        </Web3Provider>
-    </Provider>
-  );
+function MyApp({Component, pageProps}: AppProps) {
+    return (
+        <Provider store={store}>
+            <Web3Provider>
+                <EnergyProvider>
+                    <Head>
+                        <link rel="icon" type="image/png" href="/favicon.png" />
+                    </Head>
+                    <Component {...pageProps} />
+                </EnergyProvider>
+            </Web3Provider>
+        </Provider>
+    );
 }
 
 export default MyApp;
-
-/*
-export default dynamic(() => Promise.resolve(MyApp), {
-  ssr: false,
-});
- */
