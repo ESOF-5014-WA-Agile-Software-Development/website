@@ -11,6 +11,7 @@ import "antd/dist/reset.css";
 import "@/styles/antd.custom.css";
 import "@/styles/app.css";
 import "@/styles/globals.css";
+import {EnergyProvider} from "@/lib/data";
 
 
 // TODO connect MetaMask manually
@@ -18,7 +19,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
         <Web3Provider>
-            <Component {...pageProps} />
+            <EnergyProvider>
+                <Component {...pageProps} />
+            </EnergyProvider>
         </Web3Provider>
     </Provider>
   );
