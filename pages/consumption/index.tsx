@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Card, Table} from 'antd';
 import {useEnergy} from '@/lib/data';
 import Head from "next/head";

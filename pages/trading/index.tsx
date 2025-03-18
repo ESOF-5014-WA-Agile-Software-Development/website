@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Card, Table, Button, InputNumber} from 'antd';
+import {Card, Table, Button} from 'antd';
 import {useEnergy} from '@/lib/data';
 import AgileFooter from "@/components/footer";
 import Head from "next/head";
@@ -12,7 +12,7 @@ export default function Trading() {
         {title: 'Energy (kWh)', dataIndex: 'amount', key: 'amount'},
         {title: 'Price (USD/kWh)', dataIndex: 'price', key: 'price'},
         {
-            title: 'Action', key: 'action', render: (_: any) => (
+            title: 'Action', key: 'action', render: () => (
                 <>
                     <Button type="primary" onClick={handleSell}>Sell</Button>
                     <Button type="primary" onClick={handleBuy}>Buy</Button>
@@ -21,8 +21,8 @@ export default function Trading() {
         },
     ];
 
-    const [sellAmount, setSellAmount] = useState(0);
-    const [sellPrice, setSellPrice] = useState(0);
+    const [sellAmount] = useState(0);
+    const [sellPrice] = useState(0);
 
     const handleSell = () => {
         const newEntry = {
