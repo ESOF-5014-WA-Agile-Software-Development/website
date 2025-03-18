@@ -192,7 +192,13 @@ function PurchaseDrawer(props: any) {
 
         setSubmitting(true);
         try {
-            const tx = await contract.purchase(id, ethers.utils.parseUnits(electricity.toString(), 18));
+            const tx = await contract.purchase(
+                id,
+                ethers.utils.parseUnits(electricity.toString(), 18),
+                {
+                    gasLimit: 500000,
+                }
+            );
             await tx.wait();
             form.resetFields();
             show(false);
