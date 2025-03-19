@@ -155,11 +155,12 @@ function PurchaseDrawer(props: any) {
             return;
         }
 
-        const {electricity, id} = values;
+        const {electricity, id, pricePerUnit} = values;
 
         setSubmitting(true);
         try {
-            const tx = await contract.purchase(id, electricity, {gasLimit: 300000});
+            const totalPrice = ethers.BigNumber.from(pricePerUnit).mul(electricity);
+            const tx = await contract.purchase(id, electricity, {value: totalPrice});
             await tx.wait();
             form.resetFields();
             show(false);
@@ -289,7 +290,7 @@ function Page(props: any) {
                 const offerCounter = await c.offerCounter();
                 const offerList = [];
 
-                for (let i = 1; i <= offerCounter; i++) {
+                for (let i = 0; i < offerCounter; i++) {
                     const offer = await c.offers(i);
                     offerList.push({
                         id: i,
@@ -401,7 +402,7 @@ function Page(props: any) {
                 toPurchaseOffer={toPurchaseOffer}
                 open={purchaseDrawerVisible}
                 show={setPurchaseDrawerVisible}
-                refreshAfterCreate={refreshAfterPurchase}
+                refreshAfterPurchase={refreshAfterPurchase}
             />
 
             <AgileFooter/>
