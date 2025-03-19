@@ -211,21 +211,22 @@ function PurchaseDrawer(props: any) {
                     <InputNumber min={0} addonAfter="kWh" style={{width: "100%"}}/>
                 </Form.Item>
                 <Form.Item name="pricePerUnit" label="Price">
-                    <Input suffix="ETH" disabled/>
+                    <Input suffix="wei" disabled/>
                 </Form.Item>
                 <Form.Item label="Total Price" dependencies={['electricity']}>
                     {({getFieldValue}) => {
                         const electricity = getFieldValue('electricity') || 0;
-                        const totalPrice = electricity * toPurchaseOffer.pricePerUnit;
-                        const totalPriceInCAD = totalPrice * rate;
+                        const totalPrice = ethers.BigNumber.from(electricity).mul(toPurchaseOffer.pricePerUnit);
+                        const ethAmount = ethers.utils.formatUnits(totalPrice, 18);
+                        const totalPriceInCAD = (parseFloat(ethAmount) * rate).toFixed(2);
                         return <Input value={totalPriceInCAD} suffix="$" disabled/>;
                     }}
                 </Form.Item>
                 <Form.Item label="Total Price" dependencies={['electricity']}>
                     {({getFieldValue}) => {
                         const electricity = getFieldValue('electricity') || 0;
-                        const totalPrice = electricity * toPurchaseOffer.pricePerUnit;
-                        return <Input value={totalPrice.toString()} suffix="ETH" disabled/>;
+                        const totalPrice = ethers.BigNumber.from(electricity).mul(toPurchaseOffer.pricePerUnit);
+                        return <Input value={totalPrice.toString()} suffix="wei" disabled/>;
                     }}
                 </Form.Item>
                 <Form.Item name="owner" label="MetaMask"
