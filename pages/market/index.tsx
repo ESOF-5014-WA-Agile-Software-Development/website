@@ -256,6 +256,7 @@ function Page(props: any) {
     const title = "Market / CoHome";
     const description = "CoHome Market";
 
+    const ether = useAppSelector((state) => state.ether);
     const {notify} = props;
     const {provider} = useWeb3();
     const contract = useContract(provider);
@@ -291,29 +292,38 @@ function Page(props: any) {
                 const offerList = [];
 
                 for (let i = 0; i < offerCounter; i++) {
-                    const offer = await c.offers(i);
-                    offerList.push({
-                        id: i,
-                        key: i,
-                        seller: offer[0],
-                        amount: offer[1].toString(),
-                        pricePerUnit: offer[2].toString(),
-                        isAvailable: offer[3],
-                    });
+                    try {
+                        const offer = await c.offers(i);
+                        if (offer[0] !== ether.account) {
+                            offerList.push({
+                                id: i,
+                                key: i,
+                                seller: offer[0],
+                                amount: offer[1].toString(),
+                                pricePerUnit: offer[2].toString(),
+                                isAvailable: offer[3],
+                            });
+                        }
+                        if(offerList.length>30) {
+                            break;
+                        }
+                    } catch (e) {
+                        console.log(`read offer ${i} failed:`, e);
+                    }
                 }
                 console.log(offerList);
                 setOffers(offerList);
             } catch (error) {
                 notify.error("Error fetching offers:", error);
             }
-        }, [notify]
+        }, [notify, ether.account]
     );
 
     useEffect(() => {
-        if (contract) {
+        if (contract && ether.account) {
             fetchOffers(contract).then();
         }
-    }, [contract, fetchOffers]);
+    }, [contract, fetchOffers, ether]);
 
     const [purchaseDrawerVisible, setPurchaseDrawerVisible] = useState(false);
     const refreshAfterPurchase = async () => {
