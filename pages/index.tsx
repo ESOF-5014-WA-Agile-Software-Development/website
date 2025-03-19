@@ -34,13 +34,13 @@ function Home() {
                 <div
                     style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px'}}>
                     {/* Electricity Consumption */}
-                    <Card title="Electricity Consumption" bordered
+                    <Card title="Electricity Consumption" variant="outlined"
                           extra={<Link href="/consumption"><Button type="link">View More</Button></Link>}>
                         <Table dataSource={consumptionData} columns={consumptionColumns} pagination={false}/>
                     </Card>
 
                     {/* Energy Storage */}
-                    <Card title="Energy Storage" bordered
+                    <Card title="Energy Storage" variant="outlined"
                           extra={<Link href="/generation"><Button type="link">View More</Button></Link>}>
                         <p style={{color: '#595959', marginBottom: '8px'}}>Remaining Energy: 50 kWh</p>
                         <h3 style={{marginTop: '16px'}}>Recent Generation</h3>
@@ -52,7 +52,7 @@ function Home() {
                     </Card>
 
                     {/* Trading System */}
-                    <Card title="Trading System" bordered
+                    <Card title="Trading System" variant="outlined"
                           extra={<Link href="/trading"><Button type="link">View More</Button></Link>}>
                         <p style={{color: '#595959'}}>Buy or Sell excess energy</p>
                         <Table dataSource={marketData} columns={[

@@ -22,7 +22,7 @@ const CAD_TO_ETH_API = "/proxy/coingecko";
 
 
 function NewOfferDrawer(props: any) {
-    const {open, show, notify, refreshAfterCreate} = props;
+    const {open, show, notify, refreshAfterCreate, rate} = props;
 
     const ether = useAppSelector((state) => state.ether);
     const {provider} = useWeb3();
@@ -30,23 +30,6 @@ function NewOfferDrawer(props: any) {
 
     const [form] = Form.useForm();
     const [submitting, setSubmitting] = useState(false);
-
-    const [rate, setRate] = useState(0);
-
-    useEffect(() => {
-        const fetchExchangeRate = async () => {
-            try {
-                const response = await fetch(CAD_TO_ETH_API);
-                const data = JSON.parse(await response.text()) as { ethereum: { cad: number } };
-                setRate(data.ethereum.cad);
-            } catch (error) {
-                setRate(2727.13);
-                console.info("get CAD/ETH rate failed:", error);
-            }
-        };
-
-        fetchExchangeRate().then();
-    }, []);
 
     const onClose = () => {
         show(false);
@@ -69,7 +52,8 @@ function NewOfferDrawer(props: any) {
         const {electricity, pricePerUnit} = values;
         setSubmitting(true);
         try {
-            const tx = await contract.createOffer(ethers.utils.parseUnits(electricity.toString(), 18), pricePerUnit);
+            const tx = await contract.createOffer(electricity, pricePerUnit);
+            console.log(electricity, pricePerUnit.toString());
             await tx.wait();
             form.resetFields();
             show(false);
@@ -152,7 +136,7 @@ function NewOfferDrawer(props: any) {
 }
 
 function PurchaseDrawer(props: any) {
-    const {open, show, notify, refreshAfterPurchase, toPurchaseOffer} = props;
+    const {open, show, notify, refreshAfterPurchase, toPurchaseOffer, rate} = props;
 
     const ether = useAppSelector((state) => state.ether);
     const {provider} = useWeb3();
@@ -160,23 +144,6 @@ function PurchaseDrawer(props: any) {
 
     const [form] = Form.useForm();
     const [submitting, setSubmitting] = useState(false);
-
-    const [rate, setRate] = useState(0);
-
-    useEffect(() => {
-        const fetchExchangeRate = async () => {
-            try {
-                const response = await fetch(CAD_TO_ETH_API);
-                const data = JSON.parse(await response.text()) as { ethereum: { cad: number } };
-                setRate(data.ethereum.cad);
-            } catch (error) {
-                setRate(2727.13);
-                console.info("get CAD/ETH rate failed:", error);
-            }
-        };
-
-        fetchExchangeRate().then();
-    }, []);
 
     const onClose = () => {
         show(false);
@@ -192,13 +159,7 @@ function PurchaseDrawer(props: any) {
 
         setSubmitting(true);
         try {
-            const tx = await contract.purchase(
-                id,
-                ethers.utils.parseUnits(electricity.toString(), 18),
-                {
-                    gasLimit: 500000,
-                }
-            );
+            const tx = await contract.purchase(id, electricity, {gasLimit: 300000});
             await tx.wait();
             form.resetFields();
             show(false);
@@ -298,7 +259,23 @@ function Page(props: any) {
     const contract = useContract(provider);
     const [offerDrawerVisible, setOfferDrawerVisible] = useState(false);
 
+    const [rate, setRate] = useState(0);
     const [offers, setOffers] = useState<Offer[]>([]);
+
+    useEffect(() => {
+        const fetchExchangeRate = async () => {
+            try {
+                const response = await fetch(CAD_TO_ETH_API);
+                const data = JSON.parse(await response.text()) as { ethereum: { cad: number } };
+                setRate(data.ethereum.cad);
+            } catch (error) {
+                setRate(2727.13);
+                console.info("get CAD/ETH rate failed:", error);
+            }
+        };
+
+        fetchExchangeRate().then();
+    }, []);
 
     const refreshAfterNewOffer = async () => {
         if (contract) {
@@ -317,8 +294,8 @@ function Page(props: any) {
                         id: i,
                         key: i,
                         seller: offer[0],
-                        amount: ethers.utils.formatUnits(offer[1], 18),
-                        pricePerUnit: ethers.utils.formatUnits(offer[2], 18),
+                        amount: offer[1].toString(),
+                        pricePerUnit: offer[2].toString(),
                         isAvailable: offer[3],
                     });
                 }
@@ -362,9 +339,17 @@ function Page(props: any) {
             sorter: (a, b) => Number(a.amount) - Number(b.amount),
         },
         {
-            title: 'Price(ETH/kWh)',
+            title: 'Price(wei/kWh)',
             dataIndex: 'pricePerUnit',
             key: 'pricePerUnit',
+        },
+        {
+            title: 'Price(CAD/kWh)',
+            key: 'CADPerUnit',
+            render: (_, record: Offer) => {
+                const ethAmount = ethers.utils.formatUnits(record.pricePerUnit, 18);
+                return (parseFloat(ethAmount) * rate).toFixed(2);
+            }
         },
         {
             title: 'Action',
@@ -403,6 +388,7 @@ function Page(props: any) {
 
             <NewOfferDrawer
                 {...props}
+                rate={rate}
                 open={offerDrawerVisible}
                 show={setOfferDrawerVisible}
                 refreshAfterCreate={refreshAfterNewOffer}
@@ -410,6 +396,7 @@ function Page(props: any) {
 
             <PurchaseDrawer
                 {...props}
+                rate={rate}
                 toPurchaseOffer={toPurchaseOffer}
                 open={purchaseDrawerVisible}
                 show={setPurchaseDrawerVisible}
