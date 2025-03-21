@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
         "rc-table"
     ],
     publicRuntimeConfig: {
-        holesky: "0xD0cf3531b1c2Ef02d6fecC5a46B187d88f06689D",
+        holesky: "0x0485363841220E83D478F2066f354BADAD1e8fcb",
         sepolia: "0x433Ae9e83B576E629C3686E44636d2F153A7A9Cb",
         network: "holesky.etherscan.io",
     }
