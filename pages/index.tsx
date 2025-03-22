@@ -6,7 +6,10 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import getConfig from "next/config";
 
-import {Row, Col, Card, Button, Form, Input, Space, Drawer, InputNumber, Image, Typography, Table, Spin} from "antd";
+import {
+    Row, Col, Card, Button, Form, Input, Space, Drawer, InputNumber, Image, Typography, Table, Spin,
+    Flex, Progress
+} from "antd";
 import type {TableProps} from 'antd';
 import {PlusOutlined, LoadingOutlined} from "@ant-design/icons";
 
@@ -15,13 +18,27 @@ import AgileFooter from "@/components/footer";
 import {EllipsisMiddle} from "@/components/ellipsis";
 import {useWeb3} from "@/context/Web3Provider";
 import {useAppSelector, useContract} from "@/store/hooks";
-import {Offer} from "@/lib/type";
+import {Offer, Purchased} from "@/lib/type";
 import {Urls} from "@/lib/url";
 
 const {publicRuntimeConfig} = getConfig();
 
 const CAD_TO_ETH_API = "/proxy/coingecko";
 
+type ItemProps = {
+    id: number;
+    seller: string;
+    buyer: string;
+    timestamp: number;
+    input: boolean;
+};
+
+type InputProps = {
+    data: Purchased[];
+    ether: {
+        account?: string | null;
+    };
+};
 
 function NewOfferDrawer(props: any) {
     const {open, show, notify, refreshAfterCreate, rate} = props;
@@ -266,6 +283,7 @@ function Home(props: any) {
 
     const [rate, setRate] = useState(0);
     const [offers, setOffers] = useState<Offer[]>([]);
+    const [transferring, setTransferring] = useState<Purchased[]>([]);
 
     const {user} = props;
 
@@ -294,9 +312,9 @@ function Home(props: any) {
                         Authorization: `Token ${user.token}`,
                     },
                 });
-                console.log(response.data);
+                setTransferring(response.data);
             } catch (error) {
-                console.log('请求失败', error);
+                console.log('request failed, ', error);
             }
         };
 
@@ -397,11 +415,57 @@ function Home(props: any) {
                 record.isAvailable ? <Space size="middle"><a onClick={() => {
                         setToPurchaseOffer(record);
                         setPurchaseDrawerVisible(true);
-                    }} style={{color: "#4A90E2"}}>purchase</a></Space>
+                    }} style={{color: "#4A90E2"}}>Purchase</a></Space>
                     : <span>sold out</span>
             ),
         },
     ];
+
+    const ProgressItemComponent = ({seller, buyer, timestamp, input}: ItemProps) => {
+        const percent = React.useMemo(() => {
+            const now = Math.floor(Date.now() / 1000);
+            const elapsed = now - timestamp;
+            return elapsed >= 600 ? 100 : Math.floor((elapsed / 600) * 100);
+        }, [timestamp]);
+
+        return (
+            <div>
+                {input ?
+                    <div style={{fontWeight: 500, marginBottom: 4}}>
+                        Input From {seller.slice(0, 12)}
+                    </div>
+                    :
+                    <div style={{fontWeight: 500, marginBottom: 4}}>
+                        Output To {buyer.slice(0, 12)}
+                    </div>
+                }
+                <Progress percent={percent} status="active"/>
+            </div>
+        );
+    };
+
+    const ProgressItem = React.memo(ProgressItemComponent);
+    ProgressItem.displayName = "ProgressItem";
+
+    function EnergyInputOutput({data, ether}: InputProps) {
+        if (!ether?.account) return null;
+
+        return (
+            <Flex gap="middle" vertical>
+                {data.filter((item) => item.buyer.toLowerCase() === ether.account!.toLowerCase())
+                    .map((item) => (
+                        <ProgressItem
+                            input={true}
+                            key={item.ID}
+                            id={item.ID}
+                            seller={item.seller}
+                            buyer={item.buyer}
+                            timestamp={item.timestamp}
+                        />
+                    ))}
+            </Flex>
+        );
+    }
 
     return (
         <>
@@ -410,20 +474,29 @@ function Home(props: any) {
                 <meta name="description" content={description}/>
             </Head>
 
-            <Card style={{marginTop: "7px", minHeight: "100%", border: "none"}}>
-                <Row gutter={[7, 14]}>
-                    <Col xs={12} sm={8} md={6} lg={5} xl={4} xxl={3}>
-                        <Button onClick={() => {
-                            setOfferDrawerVisible(true);
-                        }} type="primary" icon={<PlusOutlined/>}> New Offer </Button>
-                    </Col>
-                </Row>
-                <Row gutter={[7, 14]} style={{marginTop: "14px"}}>
-                    <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
-                        <Table<Offer> columns={columns} dataSource={offers}/>
-                    </Col>
-                </Row>
-            </Card>
+            <Row style={{minHeight: "100%"}}>
+                <Col span={6}>
+                    <Card style={{margin: "7px", minHeight: "100%"}}>
+                        <EnergyInputOutput data={transferring} ether={ether}/>
+                    </Card>
+                </Col>
+                <Col span={18}>
+                    <Card style={{margin: "7px", minHeight: "100%"}}>
+                        <Row gutter={[7, 14]}>
+                            <Col xs={12} sm={8} md={6} lg={5} xl={4} xxl={3}>
+                                <Button onClick={() => {
+                                    setOfferDrawerVisible(true);
+                                }} type="primary" icon={<PlusOutlined/>}> New Offer </Button>
+                            </Col>
+                        </Row>
+                        <Row gutter={[7, 14]} style={{marginTop: "14px"}}>
+                            <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+                                <Table<Offer> columns={columns} dataSource={offers}/>
+                            </Col>
+                        </Row>
+                    </Card>
+                </Col>
+            </Row>
 
             <NewOfferDrawer
                 {...props}
