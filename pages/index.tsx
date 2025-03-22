@@ -463,6 +463,17 @@ function Home(props: any) {
                             timestamp={item.timestamp}
                         />
                     ))}
+                {data.filter((item) => item.seller.toLowerCase() === ether.account!.toLowerCase())
+                    .map((item) => (
+                        <ProgressItem
+                            input={false}
+                            key={item.ID}
+                            id={item.ID}
+                            seller={item.seller}
+                            buyer={item.buyer}
+                            timestamp={item.timestamp}
+                        />
+                    ))}
             </Flex>
         );
     }
