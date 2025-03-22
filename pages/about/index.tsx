@@ -1,193 +1,146 @@
 import React from "react";
-import { Row, Col, Image } from "antd";
+
+import dynamic from "next/dynamic";
+
+import {Row, Col, Image} from "antd";
 
 import AgileLayout from "@/components/layout";
 import AgileFooter from "@/components/footer";
 
 function About() {
-  const contentCN =
-    "Agile";
-  const contentEN =
-    `Agile`
-  const imgs = [
-    "https://img1.utuku.imgcdc.com/645x0/ent/20220809/07379453-20f4-463f-9c65-ca534867ee63.jpg"
-  ];
+    const contentEN = `
+  CoHome is a collaborative energy-sharing platform designed to connect multiple households in a smart grid ecosystem. It empowers communities to optimize energy usage, share surplus resources, and collectively reduce carbon footprints. Through real-time monitoring, fair cost allocation, and a user-friendly dashboard, CoHome encourages smarter living, sustainability, and cooperation among neighbors.
+`;
 
-  const BigContent = () => {
-    return (
-      <>
-        <h3 className="VCTitle">VC</h3>
-        <div
-          className="imgs"
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          {imgs.map((item: any, index: any) => {
-            return (
-              <Image
-                preview={false}
-                alt=""
-                key={index}
-                src={item}
-                style={{ width: 225, height: "100%", margin: "20px 0" }}
-              />
-            );
-          })}
-        </div>
-        <div className="empty"></div>
-        <h3>About</h3>
-        <div className="typeface">
-          <p className="Chinese">{contentCN}</p>
-          <p className="English">{contentEN}</p>
-        </div>
-        <style jsx>{`
-          h3 {
-            display: flex;
-            font-weight: bolder;
-            flex-direction: row;
-            font-size: 48px;
-            color: #0f0f0f;
-            margin-bottom: 58px;
-            width: 100%;
-            justify-content: flex-end;
-            align-items: flex-end;
-            font-family: Montserrat;
-          }
+    const images = [
+        "/images/CoHome.png",
+        "/images/CoHome-2.jpg",
+        "/images/CoHome-3.jpg",
+    ];
 
-          .empty {
-            height: 100px;
-          }
-          .typeface {
-            line-height: 30px;
-          }
-          .Chinese {
-            font-family: PingFangTC-Regular;
-            font-size: 24px;
-            color: #0f0f0f;
-            text-align: justify;
-            margin-bottom: 28px;
-            line-height: 34px;
-          }
-          .English {
-            font-family: "Montserrat";
-            font-size: 24px;
-            color: #EBEBEB;
-            text-align: justify;
-            line-height: 30px;
-          }
-        `}</style>
-      </>
+    const BigContent = () => (
+        <>
+            <h3 className="title">About CoHome</h3>
+            <div
+                className="images"
+                style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                }}
+            >
+                {images.map((item, index) => (
+                    <Image
+                        preview={false}
+                        alt={`CoHome Image ${index}`}
+                        key={index}
+                        src={item}
+                        style={{width: 300, height: "auto", margin: "20px 0"}}
+                    />
+                ))}
+            </div>
+            <div className="empty"/>
+            <div className="typeface">
+                <p className="English">{contentEN}</p>
+            </div>
+            <style jsx>{`
+                .title {
+                    display: flex;
+                    font-weight: bold;
+                    font-size: 48px;
+                    color: #0f0f0f;
+                    margin-bottom: 48px;
+                    justify-content: flex-start;
+                }
+
+                .empty {
+                    height: 80px;
+                }
+
+                .typeface {
+                    line-height: 32px;
+                }
+
+                .English {
+                    font-size: 20px;
+                    color: #333;
+                    text-align: justify;
+                }
+            `}</style>
+        </>
     );
-  };
-  const SmallContent = () => {
-    return (
-      <>
-        <h3 className="VCTitle">VC</h3>
-        <div className="imgs">
-          {imgs.map((item: any, index: any) => {
-            return (
-              <Image
-                key={index}
-                alt=""
-                src={item}
-                style={{ height: "auto", margin: "20px 0", width: 180 }}
-              />
-            );
-          })}
-        </div>
-        <div className="empty"></div>
-        <h3>About</h3>
-        <div className="typeface">
-          <p className="Chinese">{contentCN}</p>
-          <p className="English">{contentEN}</p>
-        </div>
-        <style jsx>{`
-          h3 {
-            display: flex;
-            font-weight: bolder;
-            flex-direction: row;
-            font-size: 48px;
-            color: #0f0f0f;
-            margin-bottom: 58px;
-            width: 100%;
-            justify-content: flex-end;
-            align-items: flex-end;
-            font-family: Montserrat;
-          }
-          .imgs {
-            display: flex;
-            flex-wrap: wrap;
-            align-item: center;
-            justify-content: space-between;
-          }
 
-          .empty {
-            height: 100px;
-          }
-          .typeface {
-            line-height: 30px;
-          }
-          .Chinese {
-            font-family: PingFangTC-Regular;
-            font-size: 24px;
-            color: #0f0f0f;
-            text-align: justify;
-            margin-bottom: 28px;
-          }
-          .English {
-            font-family: Helvetica;
-            font-size: 24px;
-            color: rgba(15, 15, 15, 0.28);
-            text-align: justify;
-          }
-        `}</style>
-      </>
+    const SmallContent = () => (
+        <>
+            <h3 className="title">About CoHome</h3>
+            <div className="images">
+                {images.map((item, index) => (
+                    <Image
+                        key={index}
+                        alt={`CoHome Image ${index}`}
+                        src={item}
+                        style={{height: "auto", margin: "20px 0", width: "100%"}}
+                    />
+                ))}
+            </div>
+            <div className="empty"/>
+            <div className="typeface">
+                <p className="English">{contentEN}</p>
+            </div>
+            <style jsx>{`
+                .title {
+                    display: flex;
+                    font-weight: bold;
+                    font-size: 36px;
+                    color: #0f0f0f;
+                    margin-bottom: 32px;
+                    justify-content: flex-start;
+                }
+
+                .images {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                }
+
+                .empty {
+                    height: 60px;
+                }
+
+                .typeface {
+                    line-height: 30px;
+                }
+
+                .English {
+                    font-size: 18px;
+                    color: #333;
+                    text-align: justify;
+                }
+            `}</style>
+        </>
     );
-  };
-  return (
-    <>
-      <Row>
-        <Col
-          xs={24}
-          sm={24}
-          md={0}
-          lg={0}
-          xl={0}
-          xxl={0}
-          style={{ padding: "4%" }}
-        >
-          <SmallContent />
-        </Col>
-        <Col
-          xs={0}
-          sm={0}
-          md={24}
-          lg={24}
-          xl={0}
-          xxl={0}
-          style={{ padding: "8%" }}
-        >
-          <BigContent />
-        </Col>
-        <Col
-          xs={0}
-          sm={0}
-          md={0}
-          lg={0}
-          xl={24}
-          xxl={24}
-          style={{ padding: "8%" }}
-        >
-          <BigContent />
-        </Col>
-      </Row>
-      <AgileFooter />
-    </>
-  );
+
+    return (
+        <>
+            <Row>
+                <Col xs={24} sm={24} md={0} lg={0} xl={0} xxl={0} style={{padding: "6%"}}>
+                    <SmallContent/>
+                </Col>
+
+                <Col xs={0} sm={0} md={24} lg={24} xl={0} xxl={0} style={{padding: "8%"}}>
+                    <BigContent/>
+                </Col>
+
+                <Col xs={0} sm={0} md={0} lg={0} xl={24} xxl={24} style={{padding: "8%"}}>
+                    <BigContent/>
+                </Col>
+            </Row>
+            <AgileFooter/>
+        </>
+    );
 }
 
-export default AgileLayout(About);
+export default dynamic(() => Promise.resolve(AgileLayout(About)), {
+    ssr: false,
+});

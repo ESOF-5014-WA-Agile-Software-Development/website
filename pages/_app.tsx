@@ -6,7 +6,6 @@ import type {AppProps} from "next/app";
 
 import store from "@/store/store";
 import {Web3Provider} from "@/context/Web3Provider";
-import {EnergyProvider} from "@/lib/data";
 
 import "antd/dist/reset.css";
 import "@/styles/antd.custom.css";
@@ -19,12 +18,10 @@ function MyApp({Component, pageProps}: AppProps) {
     return (
         <Provider store={store}>
             <Web3Provider>
-                <EnergyProvider>
-                    <Head>
-                        <link rel="icon" type="image/png" href="/favicon.png" />
-                    </Head>
-                    <Component {...pageProps} />
-                </EnergyProvider>
+                <Head>
+                    <link rel="icon" type="image/png" href="/favicon.png"/>
+                </Head>
+                <Component {...pageProps} />
             </Web3Provider>
         </Provider>
     );
