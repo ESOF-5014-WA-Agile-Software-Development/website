@@ -10,7 +10,8 @@ export const Urls = {
         signUpMetaMask: (): string => `${API_BASE_URL}/api/sign-up/metamask`,
         getMetaMaskNonce: (address: string | null): string => `${API_BASE_URL}/api/metamask/${address}/nonce`,
 
-        getOngoing: (): string => `${API_BASE_URL}/api/me/ongoing`
+        getOngoing: (): string => `${API_BASE_URL}/api/me/ongoing`,
+        getPrediction: (): string => `${API_BASE_URL}/api/me/prediction/1`
     },
 };
 

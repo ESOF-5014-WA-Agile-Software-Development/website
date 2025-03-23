@@ -18,3 +18,14 @@ export interface Purchased {
   amount: number;
   timestamp: number;
 }
+
+export interface Prediction {
+  ID: number;
+  CreatedAt: string;
+  UpdatedAt: string;
+  capacity: number;
+  storage: number;
+  generation: number;
+  consumption: number;
+  saleable: number;
+};

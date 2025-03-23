@@ -8,7 +8,7 @@ import getConfig from "next/config";
 
 import {
     Row, Col, Card, Button, Form, Input, Space, Drawer, InputNumber, Image, Typography, Table, Spin,
-    Flex, Progress
+    Flex, Progress, Divider
 } from "antd";
 import type {TableProps} from 'antd';
 import {PlusOutlined, LoadingOutlined} from "@ant-design/icons";
@@ -18,7 +18,7 @@ import AgileFooter from "@/components/footer";
 import {EllipsisMiddle} from "@/components/ellipsis";
 import {useWeb3} from "@/context/Web3Provider";
 import {useAppSelector, useContract} from "@/store/hooks";
-import {Offer, Purchased} from "@/lib/type";
+import {Offer, Purchased, Prediction} from "@/lib/type";
 import {Urls} from "@/lib/url";
 
 const {publicRuntimeConfig} = getConfig();
@@ -284,6 +284,7 @@ function Home(props: any) {
     const [rate, setRate] = useState(0);
     const [offers, setOffers] = useState<Offer[]>([]);
     const [transferring, setTransferring] = useState<Purchased[]>([]);
+    const [prediction, setPrediction] = useState<Prediction|null>(null);
 
     const {user} = props;
 
@@ -314,7 +315,18 @@ function Home(props: any) {
                 });
                 setTransferring(response.data);
             } catch (error) {
-                console.log('request failed, ', error);
+                console.log('get transferring failed, ', error);
+            }
+
+            try {
+                const response = await axios.get(Urls.auth.getPrediction(), {
+                    headers: {
+                        Authorization: `Token ${user.token}`,
+                    },
+                });
+                setPrediction(response.data);
+            } catch (error) {
+                console.log('get prediction failed, ', error);
             }
         };
 
@@ -396,12 +408,16 @@ function Home(props: any) {
             sorter: (a, b) => Number(a.amount) - Number(b.amount),
         },
         {
-            title: 'Price(wei/kWh)',
+            title: 'Price(ETH)',
             dataIndex: 'pricePerUnit',
             key: 'pricePerUnit',
+            render: (_, record: Offer) => {
+                const e = ethers.utils.formatUnits(record.pricePerUnit, 18);
+                return parseFloat(e).toFixed(6);
+            }
         },
         {
-            title: 'Price(CAD/kWh)',
+            title: 'Price(CAD)',
             key: 'CADPerUnit',
             render: (_, record: Offer) => {
                 const ethAmount = ethers.utils.formatUnits(record.pricePerUnit, 18);
@@ -432,11 +448,11 @@ function Home(props: any) {
             <div>
                 {input ?
                     <div style={{fontWeight: 500, marginBottom: 4}}>
-                        Input From {seller.slice(0, 12)}
+                        <Typography.Title level={5}>Input From {seller.slice(0, 12)}</Typography.Title>
                     </div>
                     :
                     <div style={{fontWeight: 500, marginBottom: 4}}>
-                        Output To {buyer.slice(0, 12)}
+                        <Typography.Title level={5}>Output To {buyer.slice(0, 12)}</Typography.Title>
                     </div>
                 }
                 <Progress percent={percent} status="active"/>
@@ -478,6 +494,31 @@ function Home(props: any) {
         );
     }
 
+    function Storage() {
+        return <Flex wrap gap="middle" align="center" style={{marginTop: 16}}>
+            <Progress
+                type="circle"
+                percent={prediction?prediction.storage/prediction.capacity*100:0}
+                steps={{count: 14, gap: 3}}
+                trailColor="rgba(0, 0, 0, 0.06)"
+                strokeWidth={20}
+            />
+            <div style={{marginLeft: 14}}>
+                <Typography.Title level={5}>Remain: {prediction?prediction.storage:"..."} kwh</Typography.Title>
+            </div>
+        </Flex>
+    }
+
+    function Prediction() {
+        return <Flex wrap gap="middle" style={{marginTop: 16}}>
+            <div>
+                <Typography.Title level={5}>Generation: {prediction?prediction.generation:"..."} kwh/h</Typography.Title>
+                <Typography.Title level={5}>Consumption: {prediction?prediction.consumption:"..."} kwh/h</Typography.Title>
+                <Typography.Title level={5}>Saleable: {prediction?prediction.saleable:"..."} kwh</Typography.Title>
+            </div>
+        </Flex>
+    }
+
     return (
         <>
             <Head>
@@ -488,11 +529,20 @@ function Home(props: any) {
             <Row style={{minHeight: "100%"}}>
                 <Col span={6}>
                     <Card style={{margin: "7px", minHeight: "100%"}}>
-                        <EnergyInputOutput data={transferring} ether={ether}/>
+                        <Divider style={{borderColor: '#7cb305'}}>Storage</Divider>
+                        <Storage/>
+                        <Divider style={{borderColor: '#7cb305'}}>Prediction</Divider>
+                        <Prediction />
+                        {transferring.length > 0 ?
+                            <>
+                                <Divider style={{borderColor: '#7cb305'}}>Transferring</Divider>
+                                <EnergyInputOutput data={transferring} ether={ether}/>
+                            </>
+                            : <></>}
                     </Card>
                 </Col>
                 <Col span={18}>
-                    <Card style={{margin: "7px", minHeight: "100%"}}>
+                    <Card style={{margin: "7px", minHeight: "100%", minWidth: "100%", overflowX: "auto"}}>
                         <Row gutter={[7, 14]}>
                             <Col xs={12} sm={8} md={6} lg={5} xl={4} xxl={3}>
                                 <Button onClick={() => {
